@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 public class GTBMaterialFlags {
 
-    public static void init() {
+    public static void register() {
 
 
     }
