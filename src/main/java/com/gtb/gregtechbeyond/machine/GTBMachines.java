@@ -41,7 +41,7 @@ public class GTBMachines {
                             .build())
                     .workableCasingModel(
                             GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
-                            GTCEu.id("block/multiblock/implosion_compressor")
+                            GTCEu.id("block/machines/assembler")
                     )
                     .register();
 
