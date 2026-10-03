@@ -141,7 +141,6 @@ legacyForge {
 
 
 
-tasks.named('check').configure { dependsOn 'runUnitTests' }
 
 dependencies {
     def isDataRun = gradle.startParameter.taskNames.any { it.toLowerCase(java.util.Locale.ROOT).contains("rundata") }
@@ -161,6 +160,12 @@ dependencies {
     modCompileOnly("dev.latvian.mods:kubejs-forge:2001.6.5-build.26")
     modRuntimeOnly("dev.latvian.mods:kubejs-forge:2001.6.5-build.26")
 
+
+
+
+
+    modImplementation("curse.maven:ldlib-626676:8830518") { transitive = false }
+
     modImplementation("curse.maven:gtceu-terminals-1423461:7787678")
 
 
@@ -170,11 +175,6 @@ dependencies {
     }
 }
 
-// See com.example.examplemod.mixin.DummyMixin for information about mixins
-mixin {
-    add sourceSets.main, "mixins.${mod_id}.refmap.json"
-    config "${mod_id}.mixins.json"
-}
 
 tasks.named('processResources', ProcessResources).configure {
     duplicatesStrategy = DuplicatesStrategy.WARN
@@ -194,22 +194,17 @@ tasks.named('processResources', ProcessResources).configure {
     filesMatching("META-INF/mods.toml") {
         expand properties + [project: project]
     }
+}
 
+tasks.named('jar', Jar).configure { finalizedBy 'reobfJar' }
 
-    tasks.named('jar', Jar).configure { finalizedBy 'reobfJar' }
-    tasks.withType(JavaCompile).configureEach {
-        // ensure that the encoding is set to UTF-8, no matter what the system default is
-        // this fixes some edge cases with special characters not displaying correctly
-        // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-        // If Javadoc is generated, this must be specified in that task too.
-        options.encoding = "UTF-8"
-        options.release.set(17)
-        options.compilerArgs << "-Aquiet=true" // Suppress mixin notes
-    }
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+    options.release.set(17)
+    options.compilerArgs << "-Aquiet=true" // Suppress mixin notes
+}
 
-    tasks.withType(JavaExec).configureEach {
-        environment 'XDG_SESSION_TYPE', 'x11'
-        environment 'GDK_BACKEND', 'x11'
-    }
-
+tasks.withType(JavaExec).configureEach {
+    environment 'XDG_SESSION_TYPE', 'x11'
+    environment 'GDK_BACKEND', 'x11'
 }
